@@ -82,3 +82,5 @@ _output_
 ![image](https://github.com/nikitaptl/works_RISC-V_assembly/assets/145208333/38187897-ab10-48b6-ab5e-2a07081a5d6c)
 # Результат прогонов в тестовой программе #
 ![image](https://github.com/nikitaptl/works_RISC-V_assembly/assets/145208333/362c4d52-3df3-452c-ba2a-f11c497ce4f0)
+# Спасибо за внимание! #
+![image](https://github.com/nikitaptl/works_RISC-V_assembly/assets/145208333/de84958a-7980-4d53-9679-41f599ddf89f)
