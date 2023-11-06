@@ -1,32 +1,76 @@
-.macro input_arrayB(%x1, %x2)
-	    mv t0 %x2 # Address of the first element in array A
-	    mv t2 %x1 # Number of elements
-	    
-	    addi t1 t0 -4 # Address of the second element in array A
-	    
-	    addi t6 sp -4 # Save the address of the first cell of array B in the stack to return it later
-	    addi a6 t2 -1 # Save the number of elements in array B (one less than specified) in a6 to return it later
-	    
-	    filling_array_B:
-	        addi sp sp -4 # Allocate memory for a new element in array B
-	        
-	        lw t3 (t0) # Load the first element at address t0 (corresponding element in array A)
-	        lw t4 (t1) # Load the second element at address t1 (corresponding element in array A)
-	        add t5 t3 t4 # Store the value of the sum of neighboring elements in t5
-	        
-	        addi t0 t0 -4 # Move down 1 cell
-	        addi t1 t1 -4
-	        
-	        sw t5 (sp) # Save the new element in array B in the stack
-	        
-	        addi t2 t2 -1 # Counter
-	        bgtz t2 filling_array_B
-	        
-	        
-	    addi sp sp -8 # Allocate memory for return values
-	    sw a6 4(sp) # Save the number of elements in array B in the stack
-	    sw t6 (sp) # Save the address of the first element in array B in the stack
-	    
-	    mv a0 a6 # Store the number of elements in array B in a0; this is the first return value
-	    mv a1 t6 # Store the address of the first element in array B in a1; this is the second return value
+.include "../macros_library/factorial.asm"
+.include "../macros_library/pow.asm"
+.include "../macros_library/find_res.asm"
+.include "../macros_library/other_macros.asm"
+
+.data:
+	text_good: .asciz "Test passed successfully\n"
+	text_bad: .asciz "Test not passed\n"
+	a: .double 0.0005
+
+	# Test case 1
+	input1: .double 0
+	output1: .double 1.0
+
+	# Test case 2
+	input2: .double 2
+	output2: .double 0.13532788199454876
+
+	# Test case 3
+	input3: .double 10
+	output3: .double 4.540234176893602E-5
+
+	# Test case 4
+	input4: .double  -10
+	output4: .double 22019.951758120904
+
+	# Test case 5
+	input5: .double 7.213
+	output5: .double 7.369826199115555E-4
+
+	# Test case 6
+	input6: .double -7.213
+	output6: .double 1356.7014522458758
+
+	# Test case 7
+	input7: .double 0.371
+	output7: .double 0.6900405032729512
+
+.macro check_case(%x1, %x2) 
+la a0 %x1
+la a1 %x2
+
+fld fa5 (a0) 
+fld fa6 (a1)
+
+find_res(fa5) # Store the return value in a0
+feq.d a0 fa0 fa6
+
+li a7 4
+beqz a0 bad
+bnez a0 good
+
+good:
+	la a0 text_good
+	ecall
+	j end
+bad:
+	la a0 text_bad
+	ecall
+	j end
+end:
 .end_macro
+
+.text:
+main:
+	# Parameters: input - input, output - expected output
+	# Prints whether the test passed or not on the screen
+	check_case(input1, output1)
+	check_case(input2, output2)
+	check_case(input3, output3)
+	check_case(input4, output4)
+	check_case(input5, output5)
+	check_case(input6, output6)
+	check_case(input7, output7)
+	li a7 10
+	ecall
